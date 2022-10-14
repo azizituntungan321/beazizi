@@ -1,18 +1,18 @@
 import { Controller, Get, Post, Body, Param, Delete, Res, Put, UseGuards } from '@nestjs/common';
-import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto.';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { UsersService } from './users.service';
+import { CreateUsersDto } from './dto/create-users.dto';
+import { UpdateUsersDto } from './dto/update-users.dto';
 import { AppResponse } from 'src/response.base';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@Controller('product')
+@Controller('users')
 
-export class ProductController {
-    constructor(private readonly productService: ProductService) { }
+export class UsersController {
+    constructor(private readonly usersService: UsersService) { }
     @Post()
-    async create(@Res() res, @Body() createProductDto: CreateProductDto) {
+    async create(@Res() res, @Body() createUsersDto: CreateUsersDto) {
         try {
-            let data = await this.productService.create(createProductDto)
+            let data = await this.usersService.create(createUsersDto)
             return AppResponse.ok(res, data, "Success create todo!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
@@ -23,7 +23,7 @@ export class ProductController {
     @Get()
     async findAll(@Res() res) {
         try {
-            let data = await this.productService.findAll();
+            let data = await this.usersService.findAll();
             return AppResponse.ok(res, data)
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
@@ -33,7 +33,7 @@ export class ProductController {
     @Get(':id')
     async findOne(@Res() res, @Param('id') id: string) {
         try {
-            let data = await this.productService.findOne(id);
+            let data = await this.usersService.findOne(id);
             if(!data){
                 return AppResponse.notFound(res,"")
             }
@@ -44,9 +44,9 @@ export class ProductController {
     }
 
     @Put(':id')
-    async update(@Res() res, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    async update(@Res() res, @Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
         try {
-            let data = await this.productService.update(id, updateProductDto);
+            let data = await this.usersService.update(id, updateUsersDto);
             return AppResponse.ok(res, data, "Todo has been updated!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
@@ -56,7 +56,7 @@ export class ProductController {
     @Delete(':id')
     async remove(@Res() res, @Param('id') id: string) {
         try {
-            let data = await this.productService.remove(id);
+            let data = await this.usersService.remove(id);
             return AppResponse.ok(res, "", data)
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
