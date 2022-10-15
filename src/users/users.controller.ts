@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { HasRoles } from 'src/auth/has-roles.decorator';
 import { Role } from 'src/model/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
+import * as bcrypt from 'bcrypt';
 
 @Controller('users')
 
@@ -29,7 +30,7 @@ export class UsersController {
 
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Post()
+    @Post('/admin')
     async createAdmin(@Res() res, @Body() createUsersDto: CreateUsersDto) {
         try {
             let check = await this.usersService.findOne(createUsersDto.username.toString());
@@ -66,11 +67,28 @@ export class UsersController {
         }
     }
 
-    @Put(':id')
+    @UseGuards(JwtAuthGuard)
+    @Put('/change-password/:id')
     async update(@Res() res, @Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
         try {
+            const salt = await bcrypt.genSalt();
+            const password = updateUsersDto.password.toString();
+            updateUsersDto.password = await bcrypt.hash(password, salt);
             let data = await this.usersService.update(id, updateUsersDto);
-            return AppResponse.ok(res, data, "User has been updated!")
+            return AppResponse.ok(res, data, "Password has been updated!")
+        } catch (e) {
+            return AppResponse.badRequest(res, "", e.message)
+        }
+    }
+
+    @HasRoles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Put('/approve/:id')
+    async setApprove(@Res() res, @Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
+        try {
+            updateUsersDto.active = updateUsersDto.active.toString();
+            let data = await this.usersService.update(id, updateUsersDto);
+            return AppResponse.ok(res, data, "Status changed!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
         }

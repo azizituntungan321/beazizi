@@ -4,11 +4,17 @@ import { CreateProductDto } from './dto/create-product.dto.';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AppResponse } from 'src/response.base';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { HasRoles } from 'src/auth/has-roles.decorator';
+import { Role } from 'src/model/role.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('product')
 
 export class ProductController {
     constructor(private readonly productService: ProductService) { }
+
+    @HasRoles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post()
     async create(@Res() res, @Body() createProductDto: CreateProductDto) {
         try {
@@ -30,6 +36,7 @@ export class ProductController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     async findOne(@Res() res, @Param('id') id: string) {
         try {
@@ -43,6 +50,8 @@ export class ProductController {
         }
     }
 
+    @HasRoles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Put(':id')
     async update(@Res() res, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
         try {
@@ -53,6 +62,8 @@ export class ProductController {
         }
     }
 
+    @HasRoles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete(':id')
     async remove(@Res() res, @Param('id') id: string) {
         try {

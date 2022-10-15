@@ -20,6 +20,13 @@ export class AuthService {
         }, HttpStatus.NOT_FOUND);
       }
 
+      // if (data.active == 'N') {
+      //   throw new HttpException({
+      //     statusCode: HttpStatus.UNAUTHORIZED,
+      //     message: 'Waiting for approve',
+      //   }, HttpStatus.UNAUTHORIZED);
+      // }
+
       const isMatch = await bcrypt.compare(password, data.password);
       if (!isMatch) {
         throw new HttpException({
