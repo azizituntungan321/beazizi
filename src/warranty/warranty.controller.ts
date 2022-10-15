@@ -19,11 +19,19 @@ export class WarrantyController {
 
     @UseGuards(JwtAuthGuard)
     @Post()
+    @ApiResponse({
+        status: 200,
+        description: 'Success add warranty product!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Error Message'
+    })
     @ApiTags('Warranty')
     async create(@Res() res,@Body() createWarranty:CreateWarranty, @Body() createWarrantyDto: CreateWarrantyDto) {
         try {
             let data = await this.warrantyService.create(createWarrantyDto)
-            return AppResponse.ok(res, data, "Success warranty product!")
+            return AppResponse.ok(res, data, "Success add warranty product!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
         }
@@ -32,6 +40,14 @@ export class WarrantyController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get()
+    @ApiResponse({
+        status: 200,
+        description: 'Success get data warranty!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Error Message'
+    })
     @ApiTags('Warranty')
     async findAll(@Res() res) {
         try {
@@ -45,6 +61,14 @@ export class WarrantyController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Put('/approve/:id')
+    @ApiResponse({
+        status: 200,
+        description: 'Status changed!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Error Message'
+    })
     @ApiTags('Warranty')
     async setApprove(@Res() res,@Body() activeUsers:ActiveUsers, @Param('id') id: string, @Body() updateWarrantyDto: UpdateWarrantyDto) {
         try {
