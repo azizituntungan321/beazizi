@@ -58,7 +58,7 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Documentaion Api using Swagger
+## Docs Api using Swagger
 
 ```bash
 # url local: http://localhost:3000/api
