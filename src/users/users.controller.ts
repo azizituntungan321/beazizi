@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Res, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Res, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUsersDto } from './dto/update-users.dto';
@@ -7,6 +7,10 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { HasRoles } from 'src/auth/has-roles.decorator';
 import { Role } from 'src/model/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { CreateUsers } from 'src/model/create-users.class';
+import { UpdateUsers } from 'src/model/update-users.class';
+import { ActiveUsers } from 'src/model/active-users.class';
+import { ApiProperty, ApiParam, ApiResponse } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 
 @Controller('users')
@@ -15,7 +19,15 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
     @Post()
-    async create(@Res() res, @Body() createUsersDto: CreateUsersDto) {
+    @ApiResponse({
+        status: 200,
+        description: 'Success create user!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'User already exists'
+    })
+    async create(@Res() res, @Body() createUsers:CreateUsers, @Body()createUsersDto: CreateUsersDto) {
         try {
             let check = await this.usersService.findOne(createUsersDto.username.toString());
             if (check) {
@@ -31,7 +43,15 @@ export class UsersController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('/admin')
-    async createAdmin(@Res() res, @Body() createUsersDto: CreateUsersDto) {
+    @ApiResponse({
+        status: 200,
+        description: 'Success create admin!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'User already exists'
+    })
+    async createAdmin(@Res() res, @Body() createUsers:UpdateUsers, @Body() createUsersDto: CreateUsersDto) {
         try {
             let check = await this.usersService.findOne(createUsersDto.username.toString());
             if (check) {
@@ -47,6 +67,14 @@ export class UsersController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get()
+    @ApiResponse({
+        status: 200,
+        description: 'Success get users!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'error message'
+    })
     async findAll(@Res() res) {
         try {
             let data = await this.usersService.findAll();
@@ -58,6 +86,14 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/account/:id')
+    @ApiResponse({
+        status: 200,
+        description: 'Success get account!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'error message'
+    })
     async findUser(@Res() res, @Param('id') username: string) {
         try {
             let data = await this.usersService.findOne(username);
@@ -69,7 +105,15 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Put('/change-password/:id')
-    async update(@Res() res, @Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
+    @ApiResponse({
+        status: 200,
+        description: 'Password has been updated!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'erros message'
+    })
+    async update(@Res() res, @Body() updateUsers:UpdateUsers, @Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
         try {
             const salt = await bcrypt.genSalt();
             const password = updateUsersDto.password.toString();
@@ -84,7 +128,15 @@ export class UsersController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Put('/approve/:id')
-    async setApprove(@Res() res, @Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
+    @ApiResponse({
+        status: 200,
+        description: 'Status changed!',
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'erros message'
+    })
+    async setApprove(@Res() res, @Body() activeUsers:ActiveUsers, @Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
         try {
             updateUsersDto.active = updateUsersDto.active.toString();
             let data = await this.usersService.update(id, updateUsersDto);
