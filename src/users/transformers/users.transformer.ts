@@ -10,6 +10,5 @@ export class UsersTransformer extends BaseTransformer {
             active: element.active,
             timestamp: element.timestamp
         }
-        // return element
     }
 }

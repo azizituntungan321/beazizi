@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUsersDto } from './dto/update-users.dto';
 import { Users } from './interfaces/users.interface';
@@ -42,7 +42,10 @@ export class UsersService {
   async update(id: string, UpdateUsersDto: UpdateUsersDto): Promise<UsersTransformer> {
     let data = await this.UsersModel.findByIdAndUpdate(id, UpdateUsersDto, { 'new': true })
     if (!data) {
-      throw new Error("Users is not found!")
+      throw new HttpException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'User Not Found',
+      }, HttpStatus.NOT_FOUND);
     }
     return UsersTransformer.singleTransform(data)
   }
@@ -50,7 +53,10 @@ export class UsersService {
   async remove(id: string): Promise<String> {
     let data = await this.UsersModel.findByIdAndRemove(id)
     if (!data) {
-      throw new Error("Users is not found!")
+      throw new HttpException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'User Not Found',
+      }, HttpStatus.NOT_FOUND);
     }
     return "Users has been deleted!"
   }

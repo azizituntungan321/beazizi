@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateWarrantyDto } from './dto/create-warranty.dto';
 import { UpdateWarrantyDto } from './dto/update-warranty.dto';
 import { Warranty } from './interfaces/warranty.interface';
@@ -28,7 +28,10 @@ export class WarrantyService {
     async update(id: string, UpdateWarrantyDto: UpdateWarrantyDto): Promise<WarrantyTransformer> {
         let data = await this.WarrantyModel.findByIdAndUpdate(id, UpdateWarrantyDto, { 'new': true })
         if (!data) {
-          throw new Error("Data is not found!")
+          throw new HttpException({
+            statusCode: HttpStatus.NOT_FOUND,
+            message: 'User Not Found',
+          }, HttpStatus.NOT_FOUND);
         }
         return WarrantyTransformer.singleTransform(data)
     }

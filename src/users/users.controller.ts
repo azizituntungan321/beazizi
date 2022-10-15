@@ -94,13 +94,4 @@ export class UsersController {
         }
     }
 
-    @Delete(':id')
-    async remove(@Res() res, @Param('id') id: string) {
-        try {
-            let data = await this.usersService.remove(id);
-            return AppResponse.ok(res, "", data)
-        } catch (e) {
-            return AppResponse.badRequest(res, "", e.message)
-        }
-    }
 }
