@@ -13,7 +13,7 @@ export class UsersController {
     async create(@Res() res, @Body() createUsersDto: CreateUsersDto) {
         try {
             let data = await this.usersService.create(createUsersDto)
-            return AppResponse.ok(res, data, "Success create todo!")
+            return AppResponse.ok(res, data, "Success create user!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
         }
@@ -47,7 +47,7 @@ export class UsersController {
     async update(@Res() res, @Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
         try {
             let data = await this.usersService.update(id, updateUsersDto);
-            return AppResponse.ok(res, data, "Todo has been updated!")
+            return AppResponse.ok(res, data, "User has been updated!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
         }

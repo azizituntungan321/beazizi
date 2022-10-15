@@ -7,21 +7,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UsersTransformer } from './transformers/users.transformer';
 import * as bcrypt from 'bcrypt';
 
-export type User = any;
+// export type User = any;
 @Injectable()
 export class UsersService {
-  private readonly users = [
-      {
-        userId: 1,
-        username: 'john',
-        password: 'changeme',
-      },
-      {
-        userId: 2,
-        username: 'maria',
-        password: 'guess',
-      },
-  ]
   constructor(@InjectModel('Users') private UsersModel: Model<Users>) { }
   
   async create(CreateUsersDto: CreateUsersDto): Promise<UsersTransformer> {
@@ -58,10 +46,6 @@ export class UsersService {
 
   async findOne(username: string): Promise<any> {
     return this.UsersModel.findOne({username}).exec();
-  }
-
-  async comparePasswords(newPassword: string, passwortHash: string): Promise<any> {
-    return bcrypt.compare(newPassword, passwortHash);
   }
 
 }

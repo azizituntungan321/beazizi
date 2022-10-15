@@ -13,7 +13,7 @@ export class ProductController {
     async create(@Res() res, @Body() createProductDto: CreateProductDto) {
         try {
             let data = await this.productService.create(createProductDto)
-            return AppResponse.ok(res, data, "Success create todo!")
+            return AppResponse.ok(res, data, "Success create product!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
         }
@@ -47,7 +47,7 @@ export class ProductController {
     async update(@Res() res, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
         try {
             let data = await this.productService.update(id, updateProductDto);
-            return AppResponse.ok(res, data, "Todo has been updated!")
+            return AppResponse.ok(res, data, "Product has been updated!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
         }
