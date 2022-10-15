@@ -22,10 +22,9 @@ export class ProductService {
     }
 
     async findOne(id: string): Promise<ProductTransformer> {
-        console.log(id)
         let data = await this.ProductModel.findById(id)
         if (!data) {
-            throw new Error('Data not found!')
+            return null;
         }
         return ProductTransformer.singleTransform(data)
     }
@@ -33,7 +32,7 @@ export class ProductService {
     async update(id: string, UpdateProductDto: UpdateProductDto): Promise<ProductTransformer> {
         let data = await this.ProductModel.findByIdAndUpdate(id, UpdateProductDto, { 'new': true })
         if (!data) {
-            throw new Error("Product is not found!")
+            return null;
         }
         return ProductTransformer.singleTransform(data)
     }
@@ -41,8 +40,8 @@ export class ProductService {
     async remove(id: string): Promise<String> {
         let data = await this.ProductModel.findByIdAndRemove(id)
         if (!data) {
-            throw new Error("Product is not found!")
+            return null;
         }
-        return "Product has been deleted!"
+        return id
     }
 }
