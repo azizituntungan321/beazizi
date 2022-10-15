@@ -16,14 +16,9 @@ import { WarrantyModule } from './warranty/warranty.module';
     ConfigModule.forRoot({ envFilePath: `${process.env.NODE_ENV}.env` }), 
     MongooseModule.forRoot('mongodb+srv://mukmin:namasa@beazizi.syf7tfd.mongodb.net/?retryWrites=true&w=majority'), AuthModule, UsersModule, WarrantyModule
   ],
-  // imports: [MongooseModule.forRoot('mongodb+srv://mukmin:namasa@cluster0.v3z8xwv.mongodb.net/test'),ProductModule],
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
   ],
 })
 export class AppModule {}
