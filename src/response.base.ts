@@ -12,7 +12,7 @@ export class AppResponse {
     static badRequest(@Res() res, values: any, message: String = ""): Response {
         return res.status(HttpStatus.BAD_REQUEST).json({
             "statusCode": HttpStatus.BAD_REQUEST,
-            "message": 'Bad Request!',
+            "message": message,
         })
     }
 

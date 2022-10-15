@@ -7,6 +7,7 @@ export class UsersTransformer extends BaseTransformer {
             id: element.id,
             username: element.username,
             role: element.role,
+            active: element.active,
             timestamp: element.timestamp
         }
         // return element

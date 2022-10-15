@@ -16,6 +16,17 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const password = CreateUsersDto.password.toString();
     CreateUsersDto.password = await bcrypt.hash(password, salt);
+    CreateUsersDto.role = 'USER';
+    CreateUsersDto.active = 'N';
+    let data = new this.UsersModel(CreateUsersDto)
+    return UsersTransformer.singleTransform(await data.save())
+  }
+
+  async createAdmin(CreateUsersDto: CreateUsersDto): Promise<UsersTransformer> {
+    const salt = await bcrypt.genSalt();
+    const password = CreateUsersDto.password.toString();
+    CreateUsersDto.password = await bcrypt.hash(password, salt);
+    CreateUsersDto.role = 'ADMIN';
     let data = new this.UsersModel(CreateUsersDto)
     return UsersTransformer.singleTransform(await data.save())
   }

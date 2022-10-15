@@ -4,14 +4,22 @@ import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUsersDto } from './dto/update-users.dto';
 import { AppResponse } from 'src/response.base';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { HasRoles } from 'src/auth/has-roles.decorator';
+import { Role } from 'src/model/role.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('users')
 
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
+
     @Post()
     async create(@Res() res, @Body() createUsersDto: CreateUsersDto) {
         try {
+            let check = await this.usersService.findOne(createUsersDto.username.toString());
+            if (check) {
+                return AppResponse.badRequest(res,"","User already exists",)
+            }
             let data = await this.usersService.create(createUsersDto)
             return AppResponse.ok(res, data, "Success create user!")
         } catch (e) {
@@ -19,25 +27,40 @@ export class UsersController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Get()
-    async findAll(@Res() res) {
+    @HasRoles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Post()
+    async createAdmin(@Res() res, @Body() createUsersDto: CreateUsersDto) {
         try {
-            let data = await this.usersService.findAll();
-            return AppResponse.ok(res, data)
+            let check = await this.usersService.findOne(createUsersDto.username.toString());
+            if (check) {
+                return AppResponse.badRequest(res,"","User already exists",)
+            }
+            let data = await this.usersService.createAdmin(createUsersDto)
+            return AppResponse.ok(res, data, "Success create admin!")
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
         }
     }
 
-    @Get(':id')
-    async findOne(@Res() res, @Param('id') id: string) {
+    @HasRoles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Get()
+    async findAll(@Res() res) {
         try {
-            let data = await this.usersService.findOne(id);
-            if(!data){
-                return AppResponse.notFound(res,"")
-            }
-            return AppResponse.ok(res, data)
+            let data = await this.usersService.findAll();
+            return AppResponse.ok(res, data, 'Success get users!')
+        } catch (e) {
+            return AppResponse.badRequest(res, "", e.message)
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/account/:id')
+    async findUser(@Res() res, @Param('id') username: string) {
+        try {
+            let data = await this.usersService.findOne(username);
+            return AppResponse.ok(res, data, 'Success get account!')
         } catch (e) {
             return AppResponse.badRequest(res, "", e.message)
         }
