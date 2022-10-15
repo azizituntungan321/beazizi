@@ -8,7 +8,7 @@ async function bootstrap() {
     .setTitle('Datasintesa BE example')
     .setDescription('API about staff, costumers, products, warranty')
     .setVersion('1.0')
-    .addTag('BEAzizi')
+    .addTag('Backend Azizi use Nest js')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

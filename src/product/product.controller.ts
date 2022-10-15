@@ -7,6 +7,9 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { HasRoles } from 'src/auth/has-roles.decorator';
 import { Role } from 'src/model/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { CrudClass } from 'src/model/crud.class';
+import { ProductClass } from 'src/model/product.class';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @Controller('product')
 
@@ -15,8 +18,9 @@ export class ProductController {
 
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
+    @ApiTags('Product')
     @Post()
-    async create(@Res() res, @Body() createProductDto: CreateProductDto) {
+    async create(@Res() res,  @Body() productClass:ProductClass, @Body() createProductDto: CreateProductDto) {
         try {
             let data = await this.productService.create(createProductDto)
             return AppResponse.ok(res, data, "Success create product!")
@@ -27,6 +31,7 @@ export class ProductController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
+    @ApiTags('Product')
     async findAll(@Res() res) {
         try {
             let data = await this.productService.findAll();
@@ -38,7 +43,8 @@ export class ProductController {
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    async findOne(@Res() res, @Param('id') id: string) {
+    @ApiTags('Product')
+    async findOne(@Res() res, @Body() crudClass:CrudClass, @Param('id') id: string) {
         try {
             let data = await this.productService.findOne(id);
             if(!data){
@@ -53,7 +59,8 @@ export class ProductController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Put(':id')
-    async update(@Res() res, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    @ApiTags('Product')
+    async update(@Res() res, @Body() crudClass:CrudClass, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
         try {
             let data = await this.productService.update(id, updateProductDto);
             return AppResponse.ok(res, data, "Product has been updated!")
@@ -65,7 +72,8 @@ export class ProductController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete(':id')
-    async remove(@Res() res, @Param('id') id: string) {
+    @ApiTags('Product')
+    async remove(@Res() res, @Body() crudClass:CrudClass, @Param('id') id: string) {
         try {
             let data = await this.productService.remove(id);
             return AppResponse.ok(res, "", data)

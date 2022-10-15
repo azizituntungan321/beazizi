@@ -7,6 +7,10 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { HasRoles } from 'src/auth/has-roles.decorator';
 import { Role } from 'src/model/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { ActiveUsers } from 'src/model/active-users.class';
+import { CreateWarranty } from 'src/model/warranty.class';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
+
 import * as bcrypt from 'bcrypt';
 
 @Controller('warranty')
@@ -15,7 +19,8 @@ export class WarrantyController {
 
     @UseGuards(JwtAuthGuard)
     @Post()
-    async create(@Res() res, @Body() createWarrantyDto: CreateWarrantyDto) {
+    @ApiTags('Warranty')
+    async create(@Res() res,@Body() createWarranty:CreateWarranty, @Body() createWarrantyDto: CreateWarrantyDto) {
         try {
             let data = await this.warrantyService.create(createWarrantyDto)
             return AppResponse.ok(res, data, "Success warranty product!")
@@ -27,6 +32,7 @@ export class WarrantyController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get()
+    @ApiTags('Warranty')
     async findAll(@Res() res) {
         try {
             let data = await this.warrantyService.findAll();
@@ -39,7 +45,8 @@ export class WarrantyController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Put('/approve/:id')
-    async setApprove(@Res() res, @Param('id') id: string, @Body() updateWarrantyDto: UpdateWarrantyDto) {
+    @ApiTags('Warranty')
+    async setApprove(@Res() res,@Body() activeUsers:ActiveUsers, @Param('id') id: string, @Body() updateWarrantyDto: UpdateWarrantyDto) {
         try {
             updateWarrantyDto.status = updateWarrantyDto.status.toString();
             let data = await this.warrantyService.update(id, updateWarrantyDto);

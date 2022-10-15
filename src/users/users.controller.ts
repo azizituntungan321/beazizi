@@ -10,7 +10,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { CreateUsers } from 'src/model/create-users.class';
 import { UpdateUsers } from 'src/model/update-users.class';
 import { ActiveUsers } from 'src/model/active-users.class';
-import { ApiProperty, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 
 @Controller('users')
@@ -19,6 +19,7 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
     @Post()
+    @ApiTags('Users')
     @ApiResponse({
         status: 200,
         description: 'Success create user!',
@@ -43,6 +44,7 @@ export class UsersController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('/admin')
+    @ApiTags('Users')
     @ApiResponse({
         status: 200,
         description: 'Success create admin!',
@@ -67,6 +69,7 @@ export class UsersController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get()
+    @ApiTags('Users')
     @ApiResponse({
         status: 200,
         description: 'Success get users!',
@@ -86,6 +89,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/account/:id')
+    @ApiTags('Users')
     @ApiResponse({
         status: 200,
         description: 'Success get account!',
@@ -105,6 +109,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Put('/change-password/:id')
+    @ApiTags('Users')
     @ApiResponse({
         status: 200,
         description: 'Password has been updated!',
@@ -128,6 +133,7 @@ export class UsersController {
     @HasRoles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Put('/approve/:id')
+    @ApiTags('Users')
     @ApiResponse({
         status: 200,
         description: 'Status changed!',
